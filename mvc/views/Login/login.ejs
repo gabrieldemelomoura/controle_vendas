@@ -1,29 +1,255 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Entrar | Controle de Vendas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#252525">
+
+    <title>Entrar | Martins Importadora</title>
+
     <link rel="stylesheet" href="/login.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
+
 <body>
-    <main class="login-card">
-        <h1>Controle de Vendas</h1>
-        <p class="subtitulo">Entre na sua conta</p>
 
-        <% if (erro) { %>
-        <p class="erro"><%= erro %></p>
-        <% } %>
+    <main class="login-container">
 
-        <form action="/login" method="POST">
-            <label for="usuario">Usuário</label>
-            <input id="usuario" name="usuario" type="text" required>
+        <!-- PAINEL INSTITUCIONAL -->
+        <section class="brand-panel">
 
-            <label for="senha">Senha</label>
-            <input id="senha" name="senha" type="password" required>
+            <div class="brand-content">
 
-            <button type="submit">Entrar</button>
-        </form>
+                <div class="brand-logo">
+                    <svg viewBox="0 0 60 60" fill="none" aria-hidden="true">
+                        <path d="M7 49V17L20 38L30 22L40 38L53 17V49"
+                            stroke="#F15A24"
+                            stroke-width="5"
+                            stroke-linecap="square"
+                            stroke-linejoin="miter"/>
+                        <path d="M7 49H53"
+                            stroke="white"
+                            stroke-width="3"/>
+                    </svg>
+
+                    <div class="brand-name">
+                        <strong>MARTINS</strong>
+                        <span>IMPORTADORA</span>
+                    </div>
+                </div>
+
+                <div class="brand-message">
+                    <span class="brand-tag">
+                        <span class="status-dot"></span>
+                        SISTEMA DE GESTÃO
+                    </span>
+
+                    <h2>
+                        Gestão inteligente.<br>
+                        <span>Resultados que movimentam.</span>
+                    </h2>
+
+                    <p>
+                        Centralize suas operações, acompanhe suas vendas
+                        e tenha controle sobre suas mercadorias em um
+                        único ambiente.
+                    </p>
+                </div>
+
+                <!-- ELEMENTO VISUAL DE LOGÍSTICA -->
+                <div class="logistics-art" aria-hidden="true">
+
+                    <div class="art-glow"></div>
+
+                    <div class="art-grid"></div>
+
+                    <div class="route-line">
+                        <span class="route-point point-one"></span>
+                        <span class="route-point point-two"></span>
+                        <span class="route-point point-three"></span>
+                    </div>
+
+                    <div class="container-scene">
+                        <div class="shipping-container container-back">
+                            <span></span>
+                        </div>
+
+                        <div class="shipping-container container-middle">
+                            <span></span>
+                        </div>
+
+                        <div class="shipping-container container-front">
+                            <span></span>
+                        </div>
+                    </div>
+
+                    <div class="art-label">
+                        <span class="art-label-icon">↗</span>
+                        <div>
+                            <strong>Controle e eficiência</strong>
+                            <small>Gestão integrada de operações</small>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <footer class="brand-footer">
+                <span>Presidente Prudente · SP</span>
+                <span>© <%= new Date().getFullYear() %> Martins Importadora</span>
+            </footer>
+
+        </section>
+
+
+        <!-- PAINEL DE LOGIN -->
+        <section class="form-panel">
+
+            <div class="login-content">
+
+                <div class="mobile-brand">
+                    <span class="mobile-brand-icon">M</span>
+                    <div>
+                        <strong>MARTINS</strong>
+                        <small>IMPORTADORA</small>
+                    </div>
+                </div>
+
+                <div class="login-heading">
+
+                    <span class="form-tag">ÁREA RESTRITA</span>
+
+                    <h1>Bem-vindo!</h1>
+
+                    <p>
+                        Acesse sua conta para continuar gerenciando
+                        suas operações.
+                    </p>
+
+                </div>
+
+
+                <% if (erro) { %>
+                    <div class="erro" role="alert">
+                        <span class="error-icon">!</span>
+                        <span><%= erro %></span>
+                    </div>
+                <% } %>
+
+
+                <form action="/login" method="POST">
+
+                    <div class="form-group">
+
+                        <label for="usuario">Usuário</label>
+
+                        <div class="input-wrapper">
+
+                            <svg viewBox="0 0 24 24" fill="none"
+                                aria-hidden="true">
+                                <path d="M20 21V19C20 16.79 18.21 15 16 15H8C5.79 15 4 16.79 4 19V21"
+                                    stroke="currentColor"
+                                    stroke-width="1.7"
+                                    stroke-linecap="round"/>
+                                <circle cx="12" cy="7" r="4"
+                                        stroke="currentColor"
+                                        stroke-width="1.7"/>
+                            </svg>
+
+                            <input
+                                id="usuario"
+                                name="usuario"
+                                type="text"
+                                placeholder="Digite seu usuário"
+                                autocomplete="username"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="senha">Senha</label>
+
+                        <div class="input-wrapper">
+
+                            <svg viewBox="0 0 24 24" fill="none"
+                                aria-hidden="true">
+                                <rect x="4" y="10" width="16" height="11"
+                                    rx="2"
+                                    stroke="currentColor"
+                                    stroke-width="1.7"/>
+                                <path d="M8 10V7C8 4.79 9.79 3 12 3C14.21 3 16 4.79 16 7V10"
+                                    stroke="currentColor"
+                                    stroke-width="1.7"
+                                    stroke-linecap="round"/>
+                            </svg>
+
+                            <input
+                                id="senha"
+                                name="senha"
+                                type="password"
+                                placeholder="Digite sua senha"
+                                autocomplete="current-password"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <button type="submit" class="login-button">
+                        <span>Entrar no sistema</span>
+
+                        <svg viewBox="0 0 24 24" fill="none"
+                            aria-hidden="true">
+                            <path d="M5 12H19M12 5L19 12L12 19"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+
+                </form>
+
+
+                <div class="security-info">
+                    <svg viewBox="0 0 24 24" fill="none"
+                        aria-hidden="true">
+                        <path d="M12 22S20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z"
+                            stroke="currentColor"
+                            stroke-width="1.7"
+                            stroke-linejoin="round"/>
+                        <path d="M9 12L11 14L15 10"
+                            stroke="currentColor"
+                            stroke-width="1.7"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"/>
+                    </svg>
+
+                    <span>Ambiente de acesso restrito</span>
+                </div>
+
+                <div class="form-footer">
+                    <span>Martins Importadora</span>
+                    <span>Controle de Vendas</span>
+                </div>
+
+            </div>
+
+        </section>
+
     </main>
+
 </body>
 </html>
