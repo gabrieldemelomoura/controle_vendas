@@ -133,6 +133,29 @@
 
                 </div>
 
+                <div class="auth-tabs" role="tablist" aria-label="Acesso à conta">
+                    <button
+                        type="button"
+                        id="login-tab"
+                        class="auth-tab <%= aba === 'login' ? 'is-active' : '' %>"
+                        role="tab"
+                        aria-selected="<%= aba === 'login' %>"
+                        aria-controls="login-panel"
+                        data-auth-tab
+                        data-panel="login-panel"
+                    >Entrar</button>
+                    <button
+                        type="button"
+                        id="signup-tab"
+                        class="auth-tab <%= aba === 'cadastro' ? 'is-active' : '' %>"
+                        role="tab"
+                        aria-selected="<%= aba === 'cadastro' %>"
+                        aria-controls="signup-panel"
+                        data-auth-tab
+                        data-panel="signup-panel"
+                    >Criar conta</button>
+                </div>
+
 
                 <% if (erro) { %>
                     <div class="erro" role="alert">
@@ -142,6 +165,7 @@
                 <% } %>
 
 
+                <section id="login-panel" class="auth-panel" role="tabpanel" aria-labelledby="login-tab" <%= aba === 'cadastro' ? 'hidden' : '' %>>
                 <form action="/login" method="POST">
 
                     <div class="form-group">
@@ -221,6 +245,63 @@
                     </button>
 
                 </form>
+                </section>
+
+                <section id="signup-panel" class="auth-panel" role="tabpanel" aria-labelledby="signup-tab" <%= aba === 'cadastro' ? '' : 'hidden' %>>
+                    <form action="/cadastro" method="POST">
+                        <div class="form-group">
+                            <label for="nome-cadastro">Nome</label>
+                            <div class="input-wrapper">
+                                <input
+                                    class="plain-input"
+                                    id="nome-cadastro"
+                                    name="nome"
+                                    type="text"
+                                    placeholder="Digite seu nome"
+                                    autocomplete="name"
+                                    maxlength="100"
+                                    required
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email-cadastro">E-mail</label>
+                            <div class="input-wrapper">
+                                <input
+                                    class="plain-input"
+                                    id="email-cadastro"
+                                    name="usuario"
+                                    type="email"
+                                    placeholder="voce@empresa.com.br"
+                                    autocomplete="email"
+                                    maxlength="150"
+                                    required
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="senha-cadastro">Senha</label>
+                            <div class="input-wrapper">
+                                <input
+                                    class="plain-input"
+                                    id="senha-cadastro"
+                                    name="senha"
+                                    type="password"
+                                    placeholder="Crie uma senha (mínimo 8 caracteres)"
+                                    autocomplete="new-password"
+                                    minlength="8"
+                                    required
+                                >
+                            </div>
+                        </div>
+
+                        <button type="submit" class="login-button">
+                            <span>Criar conta</span>
+                        </button>
+                    </form>
+                </section>
 
 
                 <div class="security-info">
@@ -251,5 +332,20 @@
 
     </main>
 
+    <script>
+        document.querySelectorAll("[data-auth-tab]").forEach((tab) => {
+            tab.addEventListener("click", () => {
+                document.querySelectorAll("[data-auth-tab]").forEach((item) => {
+                    const selecionada = item === tab;
+                    item.classList.toggle("is-active", selecionada);
+                    item.setAttribute("aria-selected", String(selecionada));
+                });
+
+                document.querySelectorAll(".auth-panel").forEach((panel) => {
+                    panel.hidden = panel.id !== tab.dataset.panel;
+                });
+            });
+        });
+    </script>
 </body>
 </html>
