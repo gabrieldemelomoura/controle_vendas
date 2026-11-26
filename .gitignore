@@ -1,2 +1,5 @@
 node_modules/
 .env
+.env.example
+SETUP_SEGURANCA.md
+controle_vendas.sql

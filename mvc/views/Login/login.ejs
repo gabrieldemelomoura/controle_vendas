@@ -167,6 +167,7 @@
 
                 <section id="login-panel" class="auth-panel" role="tabpanel" aria-labelledby="login-tab" <%= aba === 'cadastro' ? 'hidden' : '' %>>
                 <form action="/login" method="POST">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
                     <div class="form-group">
 
@@ -245,10 +246,12 @@
                     </button>
 
                 </form>
+                <a class="forgot-password-link" href="/recuperar-senha">Esqueci minha senha</a>
                 </section>
 
                 <section id="signup-panel" class="auth-panel" role="tabpanel" aria-labelledby="signup-tab" <%= aba === 'cadastro' ? '' : 'hidden' %>>
                     <form action="/cadastro" method="POST">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                         <div class="form-group">
                             <label for="nome-cadastro">Nome</label>
                             <div class="input-wrapper">

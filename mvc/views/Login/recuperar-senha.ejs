@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#252525"><title>Recuperar senha | Martins Importadora</title>
+    <link rel="stylesheet" href="/login.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="auth-standalone">
+    <main class="auth-standalone-card">
+        <a class="auth-brand" href="/login"><span class="auth-brand-mark">M</span><span><strong>MARTINS</strong><small>IMPORTADORA</small></span></a>
+        <span class="form-tag">ÁREA RESTRITA</span>
+        <h1>Recuperar senha</h1>
+        <p class="auth-description">Informe o e-mail da sua conta. Se ele estiver cadastrado, enviaremos um link de redefinição.</p>
+        <% if (erro) { %><div class="erro" role="alert"><span class="error-icon">!</span><span><%= erro %></span></div><% } %>
+        <% if (mensagem) { %><div class="auth-success" role="status"><%= mensagem %></div><% } %>
+        <form action="/recuperar-senha" method="POST">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <div class="form-group"><label for="usuario">E-mail</label><div class="input-wrapper"><input id="usuario" name="usuario" type="email" maxlength="150" autocomplete="email" placeholder="voce@empresa.com.br" required></div></div>
+            <button class="login-button" type="submit"><span>Enviar link de recuperação</span></button>
+        </form>
+        <a class="auth-back-link" href="/login">← Voltar para entrar</a>
+        <footer class="form-footer"><span>Martins Importadora</span><span>Controle de Vendas</span></footer>
+    </main>
+</body>
+</html>

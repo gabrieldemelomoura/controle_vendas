@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%= titulo %> | Martins Importadora</title>
+    <link rel="stylesheet" href="/produto.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="app-body">
+    <div class="app-shell">
+        <%- include("../partials/sidebar", { activePage: chave, usuario }) %>
+        <main class="app-main">
+            <header class="app-topbar">
+                <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" data-menu-toggle>☰</button>
+                <div class="topbar-context"><span class="context-icon">▦</span><span><%= grupo %></span><span>/</span><strong><%= titulo %></strong></div>
+                <div class="topbar-account"><span class="account-avatar"><%= String(usuario?.nome || "U").charAt(0).toUpperCase() %></span><span><%= usuario?.nome || "Usuário" %></span></div>
+            </header>
+            <div class="app-content">
+                <div class="page-heading"><div><div class="page-eyebrow"><%= grupo %></div><h1><%= titulo %></h1><p><%= descricao %></p></div></div>
+                <section class="module-placeholder">
+                    <span class="placeholder-icon">◷</span>
+                    <span class="placeholder-badge">MÓDULO EM CONSTRUÇÃO</span>
+                    <h2>Esta área faz parte do projeto</h2>
+                    <p>O espaço já está preparado e pode ser acessado pela navegação lateral. Vamos implementar as funções desta área na etapa correspondente do projeto.</p>
+                    <a href="/home" class="app-button app-button-primary">Ir para a página inicial <span>→</span></a>
+                </section>
+                <footer class="app-footer"><span>© <%= new Date().getFullYear() %> Martins Importadora</span><span>Controle de Vendas</span></footer>
+            </div>
+        </main>
+    </div>
+    <div class="sidebar-overlay" data-sidebar-overlay></div>
+    <script>
+        const menuButton = document.querySelector("[data-menu-toggle]");
+        const sidebar = document.querySelector("#app-sidebar");
+        const overlay = document.querySelector("[data-sidebar-overlay]");
+        const fecharMenu = () => { sidebar.classList.remove("sidebar-open"); overlay.classList.remove("overlay-open"); menuButton.setAttribute("aria-expanded", "false"); };
+        menuButton.addEventListener("click", () => { const aberto = sidebar.classList.toggle("sidebar-open"); overlay.classList.toggle("overlay-open", aberto); menuButton.setAttribute("aria-expanded", String(aberto)); });
+        overlay.addEventListener("click", fecharMenu);
+    </script>
+</body>
+</html>

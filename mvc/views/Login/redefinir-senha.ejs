@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#252525"><title>Nova senha | Martins Importadora</title>
+    <link rel="stylesheet" href="/login.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="auth-standalone">
+    <main class="auth-standalone-card">
+        <a class="auth-brand" href="/login"><span class="auth-brand-mark">M</span><span><strong>MARTINS</strong><small>IMPORTADORA</small></span></a>
+        <span class="form-tag">SEGURANÇA DA CONTA</span>
+        <h1>Crie uma nova senha</h1>
+        <p class="auth-description">Escolha uma senha com pelo menos 8 caracteres.</p>
+        <% if (erro) { %><div class="erro" role="alert"><span class="error-icon">!</span><span><%= erro %></span></div><% } %>
+        <% if (token) { %>
+        <form action="/redefinir-senha" method="POST">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="token" value="<%= token %>">
+            <div class="form-group"><label for="senha">Nova senha</label><div class="input-wrapper"><input id="senha" name="senha" type="password" minlength="8" maxlength="72" autocomplete="new-password" required></div></div>
+            <div class="form-group"><label for="confirmarSenha">Confirme a nova senha</label><div class="input-wrapper"><input id="confirmarSenha" name="confirmarSenha" type="password" minlength="8" maxlength="72" autocomplete="new-password" required></div></div>
+            <button class="login-button" type="submit"><span>Salvar nova senha</span></button>
+        </form>
+        <% } %>
+        <a class="auth-back-link" href="/login">← Voltar para entrar</a>
+        <footer class="form-footer"><span>Martins Importadora</span><span>Controle de Vendas</span></footer>
+    </main>
+</body>
+</html>

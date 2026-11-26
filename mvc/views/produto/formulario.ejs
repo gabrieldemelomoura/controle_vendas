@@ -1,299 +1,56 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%= produto ? "Editar produto" : "Novo produto" %> | Martins Importadora</title>
-
     <link rel="stylesheet" href="/produto.css">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-
-<body>
-
-    <main class="pagina pagina-formulario">
-
-        <header class="topbar">
-
-            <a href="/produto" class="identidade">
-                <span class="logo-m">M</span>
-
-                <span class="logo-texto">
-                    <strong>MARTINS</strong>
-                    <small>IMPORTADORA</small>
-                </span>
-            </a>
-
-            <div class="topbar-info">
-                <span class="indicador-online"></span>
-                <span>Sistema de gestão</span>
-            </div>
-
-        </header>
-
-
-        <a class="voltar" href="/produto">
-            <span>←</span> Voltar para produtos
-        </a>
-
-
-        <section class="form-introducao">
-
-            <div class="breadcrumb">
-                <span>GESTÃO</span>
-                <span>/</span>
-                <span>PRODUTOS</span>
-                <span>/</span>
-                <strong><%= produto ? "EDIÇÃO" : "CADASTRO" %></strong>
-            </div>
-
-            <h1>
-                <%= produto ? "Editar produto" : "Novo produto" %>
-            </h1>
-
-            <p>
-                <%= produto
-                    ? "Atualize as informações da mercadoria no catálogo."
-                    : "Preencha as informações abaixo para adicionar uma mercadoria ao catálogo."
-                %>
-            </p>
-
-        </section>
-
-
-        <% if (erro) { %>
-
-            <div class="aviso aviso-erro" role="alert">
-                <span class="aviso-icone">!</span>
-                <%= erro %>
-            </div>
-
-        <% } %>
-
-
-        <!-- ÁREA DO FORMULÁRIO -->
-        <section class="formulario-layout">
-
-            <div class="painel formulario-painel">
-
-                <div class="formulario-cabecalho">
-
-                    <span class="formulario-icone">
-                        <svg viewBox="0 0 24 24" fill="none">
-                            <path d="M12 5V19M5 12H19"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"/>
-                        </svg>
-                    </span>
-
-                    <div>
-                        <h2>Informações do produto</h2>
-                        <p>Preencha os dados para manter seu catálogo organizado.</p>
-                    </div>
-
+<body class="app-body">
+    <div class="app-shell">
+        <%- include("../partials/sidebar", { activePage: "produtos", usuario }) %>
+        <main class="app-main">
+            <header class="app-topbar">
+                <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" data-menu-toggle>☰</button>
+                <div class="topbar-context"><a href="/produto">Produtos</a><span>/</span><strong><%= produto ? "Editar produto" : "Novo produto" %></strong></div>
+                <div class="topbar-account"><span class="account-avatar"><%= String(usuario?.nome || "U").charAt(0).toUpperCase() %></span><span><%= usuario?.nome || "Usuário" %></span></div>
+            </header>
+            <div class="app-content">
+                <div class="page-heading form-page-heading">
+                    <div><div class="page-eyebrow">OPERAÇÃO / PRODUTOS</div><h1><%= produto ? "Editar produto" : "Novo produto" %></h1><p><%= produto ? "Atualize as informações da mercadoria no catálogo." : "Adicione uma mercadoria ao catálogo da Martins." %></p></div>
+                    <a href="/produto" class="app-button app-button-light">← Voltar ao catálogo</a>
                 </div>
-
-
-                <form
-                    class="form-produto"
-                    action="<%= produto ? `/produto/${produto.id}/editar` : "/produto" %>"
-                    method="POST"
-                >
-
-                    <div class="campo-grupo">
-
-                        <label for="sku">
-                            Código SKU
-                            <span class="campo-obrigatorio">Obrigatório</span>
-                        </label>
-
-                        <input
-                            id="sku"
-                            name="sku"
-                            type="text"
-                            maxlength="80"
-                            required
-                            value="<%= produto?.sku || "" %>"
-                            autocomplete="off"
-                            placeholder="Ex: PRD-001"
-                        >
-
-                        <small>Identificador único para localizar o produto.</small>
-
-                    </div>
-
-
-                    <div class="campo-grupo">
-
-                        <label for="nome">
-                            Nome do produto
-                            <span class="campo-obrigatorio">Obrigatório</span>
-                        </label>
-
-                        <input
-                            id="nome"
-                            name="nome"
-                            type="text"
-                            maxlength="180"
-                            required
-                            value="<%= produto?.nome || "" %>"
-                            placeholder="Digite o nome da mercadoria"
-                        >
-
-                    </div>
-
-
-                    <div class="campo-grupo">
-
-                        <label for="descricao">
-                            Descrição do produto
-                            <span class="campo-opcional">Opcional</span>
-                        </label>
-
-                        <textarea
-                            id="descricao"
-                            name="descricao"
-                            rows="4"
-                            placeholder="Adicione detalhes sobre a mercadoria..."
-                        ><%= produto?.descricao || "" %></textarea>
-
-                        <small>Utilize este campo para informações complementares.</small>
-
-                    </div>
-
-
-                    <div class="campo-grupo">
-
-                        <label for="custo_atual">
-                            Custo atual
-                            <span class="campo-obrigatorio">Obrigatório</span>
-                        </label>
-
-                        <div class="campo-moeda">
-                            <span>R$</span>
-
-                            <input
-                                id="custo_atual"
-                                name="custo_atual"
-                                type="number"
-                                min="0"
-                                max="99999999999.99"
-                                step="0.01"
-                                required
-                                value="<%= produto?.custo_atual ?? "0.00" %>"
-                                placeholder="0,00"
-                            >
-                        </div>
-
-                        <small>Esse valor será utilizado futuramente no cálculo de lucro das vendas.</small>
-
-                    </div>
-
-
-                    <div class="acoes-formulario">
-
-                        <a href="/produto" class="botao botao-secundario">
-                            Cancelar
-                        </a>
-
-                        <button type="submit" class="botao botao-principal">
-                            <%= produto ? "Salvar alterações" : "Cadastrar produto" %>
-                            <span>→</span>
-                        </button>
-
-                    </div>
-
-                </form>
-
+                <% if (erro) { %><div class="app-alert app-alert-error" role="alert"><span>!</span><%= erro %></div><% } %>
+                <div class="product-form-layout">
+                    <section class="catalog-panel product-form-panel" aria-labelledby="form-title">
+                        <div class="catalog-header form-header"><div><h2 id="form-title">Informações do produto</h2><p>Os dados marcados como obrigatórios precisam ser preenchidos.</p></div></div>
+                        <form class="product-form" action="<%= produto ? `/produto/${produto.id}/editar` : "/produto" %>" method="POST">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <div class="form-field"><label for="sku">Código SKU <span>Obrigatório</span></label><input id="sku" name="sku" type="text" maxlength="80" required value="<%= produto?.sku || "" %>" autocomplete="off" placeholder="Ex.: PRD-001"><small>Identificador único para localizar o produto.</small></div>
+                            <div class="form-field"><label for="nome">Nome do produto <span>Obrigatório</span></label><input id="nome" name="nome" type="text" maxlength="180" required value="<%= produto?.nome || "" %>" placeholder="Digite o nome da mercadoria"></div>
+                            <div class="form-field"><label for="descricao">Descrição <em>Opcional</em></label><textarea id="descricao" name="descricao" rows="4" placeholder="Detalhes sobre a mercadoria"><%= produto?.descricao || "" %></textarea><small>Use este campo para informações complementares.</small></div>
+                            <div class="form-field"><label for="custo_atual">Custo atual <span>Obrigatório</span></label><div class="money-field"><span>R$</span><input id="custo_atual" name="custo_atual" type="number" min="0" max="99999999999.99" step="0.01" required value="<%= produto?.custo_atual ?? "0.00" %>" placeholder="0,00"></div><small>Esse custo poderá ser usado no cálculo de lucro das vendas.</small></div>
+                            <div class="form-actions"><a href="/produto" class="app-button app-button-light">Cancelar</a><button type="submit" class="app-button app-button-primary"><%= produto ? "Salvar alterações" : "Cadastrar produto" %><span>→</span></button></div>
+                        </form>
+                    </section>
+                    <aside class="form-help-panel">
+                        <div class="help-card help-highlight"><span class="help-shield">✓</span><h2>Catálogo organizado</h2><p>Um SKU único ajuda a reconhecer esta mercadoria quando os anúncios dos marketplaces forem associados.</p></div>
+                        <div class="help-card"><h3>Dicas de preenchimento</h3><div class="help-tip"><b>01</b><p><strong>SKU</strong><br>Use o código interno que identifica a mercadoria.</p></div><div class="help-tip"><b>02</b><p><strong>Custo</strong><br>Informe o custo unitário atual de compra.</p></div></div>
+                    </aside>
+                </div>
+                <footer class="app-footer"><span>© <%= new Date().getFullYear() %> Martins Importadora</span><span>Gestão de produtos e mercadorias</span></footer>
             </div>
-
-
-            <!-- PAINEL INFORMATIVO -->
-            <aside class="painel-lateral">
-
-                <div class="lateral-destaque">
-
-                    <span class="lateral-icone">
-                        <svg viewBox="0 0 24 24" fill="none">
-                            <path d="M12 22S20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z"
-                                stroke="currentColor"
-                                stroke-width="1.6"
-                                stroke-linejoin="round"/>
-                            <path d="M9 12L11 14L15 10"
-                                stroke="currentColor"
-                                stroke-width="1.6"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"/>
-                        </svg>
-                    </span>
-
-                    <h3>Organização e controle</h3>
-
-                    <p>
-                        Mantenha os dados das mercadorias padronizados
-                        para facilitar o gerenciamento da operação.
-                    </p>
-
-                </div>
-
-
-                <div class="lateral-informacao">
-
-                    <h4>Sobre os campos</h4>
-
-                    <div class="dica-item">
-                        <span class="dica-numero">01</span>
-
-                        <div>
-                            <strong>SKU</strong>
-                            <p>Identifica cada produto de maneira única.</p>
-                        </div>
-                    </div>
-
-                    <div class="dica-item">
-                        <span class="dica-numero">02</span>
-
-                        <div>
-                            <strong>Nome e descrição</strong>
-                            <p>Facilitam a identificação das mercadorias.</p>
-                        </div>
-                    </div>
-
-                    <div class="dica-item">
-                        <span class="dica-numero">03</span>
-
-                        <div>
-                            <strong>Custo atual</strong>
-                            <p>Base para o futuro cálculo de lucro das vendas.</p>
-                        </div>
-                    </div>
-
-                </div>
-
-
-                <div class="lateral-rodape">
-                    <span class="lateral-ponto"></span>
-                    Ambiente de gestão Martins
-                </div>
-
-            </aside>
-
-        </section>
-
-
-        <footer class="rodape">
-            <span>© <%= new Date().getFullYear() %> Martins Importadora</span>
-            <span>Gestão de produtos e mercadorias</span>
-        </footer>
-
-    </main>
-
+        </main>
+    </div>
+    <div class="sidebar-overlay" data-sidebar-overlay></div>
+    <script>
+        const menuButton = document.querySelector("[data-menu-toggle]");
+        const sidebar = document.querySelector("#app-sidebar");
+        const overlay = document.querySelector("[data-sidebar-overlay]");
+        const fecharMenu = () => { sidebar.classList.remove("sidebar-open"); overlay.classList.remove("overlay-open"); menuButton.setAttribute("aria-expanded", "false"); };
+        menuButton.addEventListener("click", () => { const aberto = sidebar.classList.toggle("sidebar-open"); overlay.classList.toggle("overlay-open", aberto); menuButton.setAttribute("aria-expanded", String(aberto)); });
+        overlay.addEventListener("click", fecharMenu);
+    </script>
 </body>
 </html>

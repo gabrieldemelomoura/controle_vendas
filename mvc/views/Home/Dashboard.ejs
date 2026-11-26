@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard | Martins Importadora</title>
+    <link rel="stylesheet" href="/produto.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="app-body">
+    <div class="app-shell">
+        <%- include("../partials/sidebar", { activePage: "dashboard", usuario }) %>
+        <main class="app-main">
+            <header class="app-topbar">
+                <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" data-menu-toggle>☰</button>
+                <div class="topbar-context"><span class="context-icon">▦</span><span>Visão geral</span></div>
+                <div class="topbar-account"><span class="account-avatar"><%= String(usuario?.nome || "U").charAt(0).toUpperCase() %></span><span><%= usuario?.nome || "Usuário" %></span></div>
+            </header>
+            <div class="app-content dashboard-content">
+                <div class="page-heading dashboard-heading">
+                    <div><div class="page-eyebrow">MARTINS IMPORTADORA / RESULTADOS</div><h1>Dashboard</h1><p>Faturamento, resultados e desempenho dos produtos vendidos.</p></div>
+                    <form class="period-filter" action="/home" method="GET">
+                        <label for="periodo">Período</label>
+                        <select id="periodo" name="dias" onchange="this.form.submit()">
+                            <option value="7" <%= dias === 7 ? "selected" : "" %>>Últimos 7 dias</option>
+                            <option value="30" <%= dias === 30 ? "selected" : "" %>>Últimos 30 dias</option>
+                            <option value="90" <%= dias === 90 ? "selected" : "" %>>Últimos 90 dias</option>
+                        </select>
+                    </form>
+                </div>
+
+                <% if (erro) { %><div class="app-alert app-alert-error" role="alert"><span>!</span><%= erro %></div><% } %>
+
+                <section class="dashboard-metrics" aria-label="Resumo financeiro">
+                    <article class="dashboard-metric metric-revenue"><span>FATURAMENTO</span><strong><%= new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(resumo.faturamento) %></strong><small>Vendas aprovadas no período</small></article>
+                    <article class="dashboard-metric metric-marketplace"><span>LÍQUIDO DO MARKETPLACE</span><strong><%= new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(resumo.liquidoMarketplace) %></strong><small>Valor líquido registrado nas vendas</small></article>
+                    <article class="dashboard-metric metric-gross"><span>LUCRO BRUTO</span><strong><%= new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(resumo.lucroBruto) %></strong><small>Faturamento menos custo dos produtos</small></article>
+                    <article class="dashboard-metric metric-net"><span>LUCRO LÍQUIDO / MARGEM (R$)</span><strong><%= new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(resumo.lucroLiquido) %></strong><small>Líquido do marketplace menos custo dos produtos</small></article>
+                </section>
+
+                <% const series = [
+                    { nome: "Faturamento", campo: "faturamento", cor: "#a238df" },
+                    { nome: "Líquido do marketplace", campo: "liquidoMarketplace", cor: "#278fce" },
+                    { nome: "Lucro bruto", campo: "lucroBruto", cor: "#12b886" },
+                    { nome: "Lucro líquido / margem (R$)", campo: "lucroLiquido", cor: "#f59e0b" },
+                ];
+                const valoresGrafico = pontos.flatMap((ponto) => series.map((item) => Number(ponto[item.campo] || 0)));
+                const minimo = Math.min(0, ...valoresGrafico);
+                const maximoOriginal = Math.max(0, ...valoresGrafico);
+                const maximo = maximoOriginal === minimo ? minimo + 1 : maximoOriginal;
+                const larguraGrafico = 1000;
+                const topoGrafico = 18;
+                const alturaGrafico = 205;
+                const xGrafico = (indice) => pontos.length <= 1 ? larguraGrafico / 2 : 30 + (indice * 940 / (pontos.length - 1));
+                const yGrafico = (valor) => topoGrafico + (maximo - valor) * alturaGrafico / (maximo - minimo);
+                const formatarMoeda = (valor) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(Number(valor || 0));
+                %>
+                <section class="dashboard-chart-panel" aria-labelledby="chart-title">
+                    <div class="dashboard-panel-heading"><div><h2 id="chart-title">Evolução dos resultados</h2><p>Valores diários em reais; a margem é exibida como valor monetário, sem percentual.</p></div><span class="chart-period-label">Últimos <%= dias %> dias</span></div>
+                    <div class="dashboard-legend"><% series.forEach((item) => { %><span><i style="--legend-color:<%= item.cor %>"></i><%= item.nome %></span><% }); %></div>
+                    <div class="dashboard-chart-scroll">
+                        <svg class="dashboard-chart" viewBox="0 0 1000 260" role="img" aria-label="Gráfico de faturamento, líquido do marketplace, lucro bruto e lucro líquido em reais">
+                            <% for (let linha = 0; linha <= 4; linha += 1) { const y = topoGrafico + linha * alturaGrafico / 4; const valor = maximo - linha * (maximo - minimo) / 4; %>
+                                <line x1="30" y1="<%= y %>" x2="970" y2="<%= y %>" class="chart-grid-line" />
+                                <text x="22" y="<%= y - 4 %>" class="chart-axis-label" text-anchor="end"><%= formatarMoeda(valor) %></text>
+                            <% } %>
+                            <% series.forEach((item) => { const pontosSvg = pontos.map((ponto, indice) => `${xGrafico(indice)},${yGrafico(ponto[item.campo] || 0)}`).join(" "); %>
+                                <% if (pontos.length > 1) { %><polyline points="<%= pontosSvg %>" class="chart-series-line" style="--series-color:<%= item.cor %>" />
+                                <% pontos.forEach((ponto, indice) => { %><circle cx="<%= xGrafico(indice) %>" cy="<%= yGrafico(ponto[item.campo] || 0) %>" r="2.4" class="chart-series-point" style="--series-color:<%= item.cor %>"><title><%= ponto.data %> · <%= item.nome %>: <%= formatarMoeda(ponto[item.campo]) %></title></circle><% }); %><% } %>
+                            <% }); %>
+                            <% if (pontos.length) { const saltos = Math.max(1, Math.ceil(pontos.length / 7)); pontos.forEach((ponto, indice) => { if (indice % saltos === 0 || indice === pontos.length - 1) { %>
+                                <text x="<%= xGrafico(indice) %>" y="246" class="chart-axis-label chart-date-label" text-anchor="middle"><%= new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short" }).format(new Date(`${ponto.data}T12:00:00`)) %></text>
+                            <% } }); } %>
+                        </svg>
+                    </div>
+                    <% if (!resumo.faturamento && !resumo.liquidoMarketplace) { %><p class="dashboard-no-sales">Ainda não há vendas aprovadas neste período. O gráfico e os indicadores serão preenchidos após a sincronização ou o cadastro das vendas.</p><% } %>
+                </section>
+
+                <section class="ranking-grid" aria-label="Desempenho de produtos">
+                    <article class="ranking-panel">
+                        <div class="dashboard-panel-heading"><div><h2>15 produtos mais vendidos</h2><p>Ordenados pela quantidade de unidades vendidas.</p></div><span class="ranking-mark ranking-best">↑</span></div>
+                        <% if (maisVendidos.length) { %><div class="ranking-table-scroll"><table class="ranking-table"><thead><tr><th>#</th><th>Produto</th><th>Unidades</th><th>Faturamento</th></tr></thead><tbody>
+                            <% maisVendidos.forEach((produto, indice) => { %><tr><td><span class="ranking-position"><%= String(indice + 1).padStart(2, "0") %></span></td><td><strong><%= produto.nome %></strong><small><%= produto.sku %></small></td><td><%= new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 3 }).format(produto.unidades_vendidas) %></td><td><%= formatarMoeda(produto.faturamento) %></td></tr><% }); %>
+                        </tbody></table></div><% } else { %><div class="ranking-empty">Cadastre produtos para exibir o ranking de vendas.</div><% } %>
+                    </article>
+                    <article class="ranking-panel">
+                        <div class="dashboard-panel-heading"><div><h2>15 produtos menos vendidos</h2><p>Inclui produtos ativos que ainda não registraram vendas.</p></div><span class="ranking-mark ranking-low">↓</span></div>
+                        <% if (menosVendidos.length) { %><div class="ranking-table-scroll"><table class="ranking-table"><thead><tr><th>#</th><th>Produto</th><th>Unidades</th><th>Faturamento</th></tr></thead><tbody>
+                            <% menosVendidos.forEach((produto, indice) => { %><tr><td><span class="ranking-position"><%= String(indice + 1).padStart(2, "0") %></span></td><td><strong><%= produto.nome %></strong><small><%= produto.sku %></small></td><td><%= new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 3 }).format(produto.unidades_vendidas) %></td><td><%= formatarMoeda(produto.faturamento) %></td></tr><% }); %>
+                        </tbody></table></div><% } else { %><div class="ranking-empty">Cadastre produtos para exibir quais estão vendendo menos.</div><% } %>
+                    </article>
+                </section>
+                <p class="dashboard-calculation-note">Cálculos no período selecionado: lucro bruto = faturamento − custo dos produtos; lucro líquido / margem em R$ = líquido recebido do marketplace − custo dos produtos. Despesas gerais ainda não cadastradas por venda não entram nesse cálculo.</p>
+                <footer class="app-footer"><span>© <%= new Date().getFullYear() %> Martins Importadora</span><span>Resumo de vendas e resultados</span></footer>
+            </div>
+        </main>
+    </div>
+    <div class="sidebar-overlay" data-sidebar-overlay></div>
+    <script>
+        const menuButton = document.querySelector("[data-menu-toggle]");
+        const sidebar = document.querySelector("#app-sidebar");
+        const overlay = document.querySelector("[data-sidebar-overlay]");
+        const fecharMenu = () => { sidebar.classList.remove("sidebar-open"); overlay.classList.remove("overlay-open"); menuButton.setAttribute("aria-expanded", "false"); };
+        menuButton.addEventListener("click", () => { const aberto = sidebar.classList.toggle("sidebar-open"); overlay.classList.toggle("overlay-open", aberto); menuButton.setAttribute("aria-expanded", String(aberto)); });
+        overlay.addEventListener("click", fecharMenu);
+    </script>
+</body>
+</html>

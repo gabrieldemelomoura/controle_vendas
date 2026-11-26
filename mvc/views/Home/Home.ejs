@@ -1,11 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Início | Martins Importadora</title>
+    <link rel="stylesheet" href="/produto.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Hello world!</h1>
+    <main class="pagina">
+        <header class="topbar">
+            <a href="/home" class="identidade"><span class="logo-m">M</span><span class="logo-texto"><strong>MARTINS</strong><small>IMPORTADORA</small></span></a>
+            <div class="topbar-info"><span class="indicador-online"></span><span>Olá, <%= usuario.nome %></span></div>
+        </header>
+        <section class="introducao">
+            <div class="introducao-conteudo"><div class="breadcrumb"><span>PAINEL</span><span>/</span><strong>INÍCIO</strong></div><h1>Bem-vindo, <%= usuario.nome %></h1><p>Acesse as áreas de gestão da sua operação.</p></div>
+            <div class="introducao-decoracao"></div>
+        </section>
+        <section class="painel home-links">
+            <div class="painel-cabecalho"><div class="painel-titulo"><div><h2>Áreas do sistema</h2><p>Os próximos módulos serão adicionados por etapas.</p></div></div></div>
+            <nav class="home-navegacao" aria-label="Áreas do sistema">
+                <a class="botao botao-secundario" href="/produto">Produtos <span>→</span></a>
+                <a class="botao botao-secundario" href="/venda">Vendas <span>→</span></a>
+                <% if (usuario.perfil === "admin") { %><a class="botao botao-secundario" href="/admin/usuarios">Gerenciar usuários <span>→</span></a><% } %>
+            </nav>
+        </section>
+        <footer class="rodape"><span>© <%= new Date().getFullYear() %> Martins Importadora</span><span>Controle de Vendas</span></footer>
+    </main>
 </body>
 </html>

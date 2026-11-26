@@ -5,13 +5,27 @@ class ProdutoModel {
         this.conexao = conexao;
     }
 
-    async listar({ incluirInativos = false } = {}) {
-        const filtro = incluirInativos ? "" : "WHERE ativo = 1";
+    async listar({ status = "ativos" } = {}) {
+        const filtro = status === "todos" ? "" : status === "inativos" ? "WHERE ativo = 0" : "WHERE ativo = 1";
         const [produtos] = await this.conexao.execute(
             `SELECT id, sku, nome, descricao, custo_atual, ativo, criado_em, atualizado_em
              FROM produtos ${filtro} ORDER BY nome ASC`
         );
         return produtos;
+    }
+
+    async contarPorStatus() {
+        const [[resultado]] = await this.conexao.execute(
+            `SELECT COUNT(*) AS total,
+                    COALESCE(SUM(ativo = 1), 0) AS ativos,
+                    COALESCE(SUM(ativo = 0), 0) AS inativos
+             FROM produtos`
+        );
+        return {
+            total: Number(resultado.total),
+            ativos: Number(resultado.ativos),
+            inativos: Number(resultado.inativos),
+        };
     }
 
     async buscarPorId(id) {
@@ -45,6 +59,14 @@ class ProdutoModel {
     async inativar(id) {
         const [resultado] = await this.conexao.execute(
             `UPDATE produtos SET ativo = 0 WHERE id = ? AND ativo = 1`,
+            [id]
+        );
+        return resultado.affectedRows;
+    }
+
+    async reativar(id) {
+        const [resultado] = await this.conexao.execute(
+            `UPDATE produtos SET ativo = 1 WHERE id = ? AND ativo = 0`,
             [id]
         );
         return resultado.affectedRows;

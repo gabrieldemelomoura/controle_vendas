@@ -11,7 +11,13 @@ class VendaController {
     }
 
     listar = (req, res) => {
-        res.render("venda/venda");
+        res.render("Home/modulo", {
+            titulo: "Vendas",
+            chave: "vendas",
+            grupo: "OPERAÇÃO",
+            descricao: "As vendas do Mercado Livre serão exibidas aqui quando a integração estiver pronta.",
+            usuario: req.session.usuario,
+        });
     };
 }
 

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Usuários | Martins Importadora</title>
+    <link rel="stylesheet" href="/produto.css"><link rel="stylesheet" href="/usuarios.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="app-body">
+    <div class="app-shell">
+        <%- include("../partials/sidebar", { activePage: "usuarios", usuario }) %>
+        <main class="app-main">
+            <header class="app-topbar">
+                <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" data-menu-toggle>☰</button>
+                <div class="topbar-context"><span class="context-icon">♙</span><span>Administração</span><span>/</span><strong>Usuários</strong></div>
+                <div class="topbar-account"><span class="account-avatar"><%= String(usuario?.nome || "U").charAt(0).toUpperCase() %></span><span><%= usuario?.nome || "Usuário" %></span></div>
+            </header>
+            <div class="app-content">
+                <div class="page-heading"><div><div class="page-eyebrow">ADMINISTRAÇÃO / ACESSOS</div><h1>Gerenciar usuários</h1><p>Consulte as contas e controle quem pode acessar o sistema.</p></div></div>
+                <% if (sucesso) { %><div class="usuarios-alerta sucesso" role="status"><%= sucesso %></div><% } %>
+                <% if (erro) { %><div class="usuarios-alerta erro" role="alert"><%= erro %></div><% } %>
+                <section class="usuarios-cartao">
+                    <div class="usuarios-cartao-topo"><div><h2>Contas cadastradas</h2><p>Somente administradores podem alterar o acesso.</p></div><span class="usuarios-contagem"><%= usuarios.length %> contas</span></div>
+                    <div class="usuarios-tabela-wrap"><table>
+                        <thead><tr><th>Usuário</th><th>Perfil</th><th>Estado</th><th class="acoes-coluna">Acesso</th></tr></thead>
+                        <tbody><% usuarios.forEach((usuarioLista) => { %>
+                            <tr>
+                                <td><strong><%= usuarioLista.nome %></strong><small><%= usuarioLista.usuario %></small></td>
+                                <td><span class="perfil <%= usuarioLista.perfil === 'admin' ? 'perfil-admin' : '' %>"><%= usuarioLista.perfil === 'admin' ? 'Administrador' : 'Usuário' %></span></td>
+                                <td><span class="estado <%= Number(usuarioLista.ativo) ? 'ativo' : 'inativo' %>"><%= Number(usuarioLista.ativo) ? 'Ativo' : 'Inativo' %></span></td>
+                                <td class="acoes-coluna">
+                                <% if (Number(usuarioLista.ativo)) { %>
+                                    <% if (Number(usuarioLista.id) === usuarioAtualId) { %><span class="conta-atual">Sua conta</span><% } else { %>
+                                        <form action="/admin/usuarios/<%= usuarioLista.id %>/inativar" method="POST" onsubmit="return confirm('Inativar o acesso deste usuário?')"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="acao-inativar" type="submit">Inativar</button></form>
+                                    <% } %>
+                                <% } else { %>
+                                    <form action="/admin/usuarios/<%= usuarioLista.id %>/reativar" method="POST"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="acao-reativar" type="submit">Reativar</button></form>
+                                <% } %>
+                                </td>
+                            </tr>
+                        <% }); %></tbody>
+                    </table></div>
+                    <% if (!usuarios.length) { %><div class="usuarios-vazio">Nenhuma conta cadastrada.</div><% } %>
+                </section>
+                <footer class="app-footer"><span>© <%= new Date().getFullYear() %> Martins Importadora</span><span>Gestão de acessos</span></footer>
+            </div>
+        </main>
+    </div>
+    <div class="sidebar-overlay" data-sidebar-overlay></div>
+    <script>
+        const menuButton = document.querySelector("[data-menu-toggle]");
+        const sidebar = document.querySelector("#app-sidebar");
+        const overlay = document.querySelector("[data-sidebar-overlay]");
+        const fecharMenu = () => { sidebar.classList.remove("sidebar-open"); overlay.classList.remove("overlay-open"); menuButton.setAttribute("aria-expanded", "false"); };
+        menuButton.addEventListener("click", () => { const aberto = sidebar.classList.toggle("sidebar-open"); overlay.classList.toggle("overlay-open", aberto); menuButton.setAttribute("aria-expanded", String(aberto)); });
+        overlay.addEventListener("click", fecharMenu);
+    </script>
+</body>
+</html>
