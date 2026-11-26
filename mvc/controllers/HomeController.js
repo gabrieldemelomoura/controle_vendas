@@ -1,3 +1,5 @@
+const { exigirLogin } = require("../middlewares/Autenticacao");
+
 class HomeController {
     constructor(app) {
         this.app = app;
@@ -5,16 +7,8 @@ class HomeController {
     }
 
     configurarRotas() {
-        this.app.get("/home", this.exigirLogin, this.index);
+        this.app.get("/home", exigirLogin, this.index);
     }
-
-    exigirLogin = (req, res, next) => {
-        if (!req.session.usuario) {
-            return res.redirect("/login");
-        }
-
-        next();
-    };
 
     index = (req, res) => {
         res.render("Home/Home");

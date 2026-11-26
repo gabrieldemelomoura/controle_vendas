@@ -1,3 +1,5 @@
+const { exigirLogin } = require("../middlewares/Autenticacao");
+
 class VendaController {
     constructor(app) {
         this.app = app;
@@ -5,7 +7,7 @@ class VendaController {
     }
 
     configurarRotas() {
-        this.app.get("/venda", this.listar);
+        this.app.get("/venda", exigirLogin, this.listar);
     }
 
     listar = (req, res) => {

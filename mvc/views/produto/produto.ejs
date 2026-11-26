@@ -1,0 +1,293 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Produtos | Martins Importadora</title>
+
+    <link rel="stylesheet" href="/produto.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <main class="pagina">
+
+        <header class="topbar">
+
+            <a href="/produto" class="identidade">
+                <span class="logo-m">M</span>
+
+                <span class="logo-texto">
+                    <strong>MARTINS</strong>
+                    <small>IMPORTADORA</small>
+                </span>
+            </a>
+
+            <div class="topbar-info">
+                <span class="indicador-online"></span>
+                <span>Sistema de gestão</span>
+            </div>
+
+        </header>
+
+        <section class="introducao">
+
+            <div class="introducao-conteudo">
+
+                <div class="breadcrumb">
+                    <span>GESTÃO</span>
+                    <span>/</span>
+                    <strong>CATÁLOGO DE PRODUTOS</strong>
+                </div>
+
+                <h1>Produtos</h1>
+
+                <p>
+                    Gerencie seu catálogo, organize suas mercadorias
+                    e mantenha os custos da operação atualizados.
+                </p>
+
+            </div>
+
+            <a href="/produto/novo" class="botao botao-principal">
+                <span class="botao-icone">＋</span>
+                Novo produto
+            </a>
+
+            <div class="introducao-decoracao"></div>
+
+        </section>
+
+
+        <% if (sucesso) { %>
+            <div class="aviso aviso-sucesso" role="status">
+                <span class="aviso-icone">✓</span>
+                <%= sucesso %>
+            </div>
+        <% } %>
+
+        <% if (erro) { %>
+            <div class="aviso aviso-erro" role="alert">
+                <span class="aviso-icone">!</span>
+                <%= erro %>
+            </div>
+        <% } %>
+
+
+        <section class="indicadores">
+
+            <article class="indicador-card">
+                <div class="indicador-topo">
+                    <span class="indicador-icone">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M21 8L12 13L3 8M12 22V13M21 8V16L12 22L3 16V8L12 3L21 8Z"
+                                stroke="currentColor"
+                                stroke-width="1.7"
+                                stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                    <span class="indicador-legenda">CATÁLOGO</span>
+                </div>
+
+                <strong class="indicador-numero"><%= produtos.length %></strong>
+
+                <span class="indicador-descricao">
+                    Produtos cadastrados
+                </span>
+            </article>
+
+
+            <article class="indicador-card indicador-destaque">
+                <div class="indicador-topo">
+                    <span class="indicador-icone">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M12 8V12L15 14M21 12A9 9 0 1 1 3 12A9 9 0 0 1 21 12Z"
+                                stroke="currentColor"
+                                stroke-width="1.7"
+                                stroke-linecap="round"/>
+                        </svg>
+                    </span>
+                    <span class="indicador-legenda">OPERAÇÃO</span>
+                </div>
+
+                <strong class="indicador-titulo">Controle de custos</strong>
+
+                <span class="indicador-descricao">
+                    Acompanhamento dos custos cadastrados
+                </span>
+            </article>
+
+        </section>
+
+        <section class="painel" aria-labelledby="lista-titulo">
+
+            <div class="painel-cabecalho">
+
+                <div class="painel-titulo">
+                    <span class="painel-icone">▦</span>
+
+                    <div>
+                        <h2 id="lista-titulo">Catálogo de produtos</h2>
+                        <p>Visualize e gerencie as mercadorias cadastradas.</p>
+                    </div>
+                </div>
+
+                <span class="contador">
+                    <strong><%= produtos.length %></strong>
+                    <%= produtos.length === 1 ? "produto" : "produtos" %>
+                </span>
+
+            </div>
+
+
+            <% if (produtos.length) { %>
+
+                <div class="tabela-rolagem">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Identificação</th>
+                                <th>Produto</th>
+                                <th>Custo atual</th>
+                                <th class="coluna-acoes">Gerenciamento</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <% produtos.forEach((produto) => { %>
+
+                                <tr>
+
+                                    <td>
+                                        <span class="sku">
+                                            <%= produto.sku %>
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <div class="produto-identificacao">
+                                            <span class="produto-mini-icone">
+                                                <svg viewBox="0 0 24 24" fill="none">
+                                                    <path d="M21 8L12 13L3 8M12 22V13M21 8V16L12 22L3 16V8L12 3L21 8Z"
+                                                        stroke="currentColor"
+                                                        stroke-width="1.7"
+                                                        stroke-linejoin="round"/>
+                                                </svg>
+                                            </span>
+
+                                            <div>
+                                                <strong><%= produto.nome %></strong>
+
+                                                <% if (produto.descricao) { %>
+                                                    <small><%= produto.descricao %></small>
+                                                <% } else { %>
+                                                    <small>Sem descrição cadastrada</small>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <strong class="valor-produto">
+                                            <%= new Intl.NumberFormat("pt-BR", {
+                                                style: "currency",
+                                                currency: "BRL"
+                                            }).format(Number(produto.custo_atual)) %>
+                                        </strong>
+                                    </td>
+
+                                    <td class="coluna-acoes">
+
+                                        <div class="acoes">
+
+                                            <a
+                                                class="botao botao-secundario"
+                                                href="/produto/<%= produto.id %>/editar"
+                                                aria-label="Editar <%= produto.nome %>"
+                                            >
+                                                Editar
+                                            </a>
+
+                                            <form
+                                                action="/produto/<%= produto.id %>/inativar"
+                                                method="POST"
+                                                onsubmit="return confirm('Inativar este produto?')"
+                                            >
+                                                <button
+                                                    class="botao botao-perigo"
+                                                    type="submit"
+                                                >
+                                                    Inativar
+                                                </button>
+                                            </form>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            <% }); %>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <div class="painel-rodape">
+                    <span>Martins Importadora</span>
+                    <span>Exibindo <strong><%= produtos.length %></strong> registros</span>
+                </div>
+
+            <% } else { %>
+
+                <div class="estado-vazio">
+
+                    <span class="icone-vazio">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M21 8L12 13L3 8M12 22V13M21 8V16L12 22L3 16V8L12 3L21 8Z"
+                                  stroke="currentColor"
+                                  stroke-width="1.5"
+                                  stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+
+                    <h3>Seu catálogo está vazio</h3>
+
+                    <p>
+                        Você ainda não possui produtos cadastrados.
+                        Comece adicionando a primeira mercadoria.
+                    </p>
+
+                    <a href="/produto/novo" class="botao botao-principal">
+                        ＋ Cadastrar primeiro produto
+                    </a>
+
+                </div>
+
+            <% } %>
+
+        </section>
+
+
+        <!-- RODAPÉ -->
+        <footer class="rodape">
+            <span>© <%= new Date().getFullYear() %> Martins Importadora</span>
+            <span>Gestão de produtos e mercadorias</span>
+        </footer>
+
+    </main>
+
+</body>
+</html>
