@@ -69,9 +69,21 @@ class Server {
         new ModuloController(this.app);
     }
 
-    on() {
+    async on() {
+        const conexao = require("./mvc/model/BancoModel");
+        try {
+            await conexao.execute("SELECT 1");
+        } catch (erro) {
+            console.error(
+                `Falha ao conectar ao MariaDB (${erro.code || "ERRO"}). Confira DB_HOST, DB_USER, DB_PASSWORD, DB_NAME e DB_PORT no .env.`
+            );
+            await conexao.end();
+            process.exitCode = 1;
+            return;
+        }
+
         this.app.listen(this.porta, () => {
-            console.log(`Servidor rodando em http://localhost:${this.porta}`);
+            console.log(`Servidor rodando em http://localhost:${this.porta} (MariaDB conectado)`);
         });
     }
 }
