@@ -11,7 +11,6 @@ const modulos = [
     { rota: "/financeiro/dre", titulo: "DRE", chave: "financeiro-dre", grupo: "FINANCEIRO", descricao: "A demonstração de resultados será construída após a validação dos dados financeiros." },
     { rota: "/financeiro/analise", titulo: "Análise financeira", chave: "financeiro-analise", grupo: "FINANCEIRO", descricao: "As análises serão adicionadas quando houver dados consolidados no sistema." },
     { rota: "/financeiro/categorias", titulo: "Categorias financeiras", chave: "financeiro-categorias", grupo: "FINANCEIRO", descricao: "As categorias financeiras poderão ser configuradas nesta área." },
-    { rota: "/contas", titulo: "Contas de marketplace", chave: "contas", grupo: "ADMINISTRAÇÃO", descricao: "O gerenciamento de contas do Mercado Livre será desenvolvido antes de iniciar a integração." },
 ];
 
 class ModuloController {

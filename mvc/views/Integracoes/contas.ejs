@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Contas | Martins Importadora</title>
+    <link rel="stylesheet" href="/produto.css">
+    <link rel="stylesheet" href="/contas.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="app-body">
+    <div class="app-shell">
+        <%- include("../partials/sidebar", { activePage: "contas", usuario }) %>
+        <main class="app-main">
+            <header class="app-topbar">
+                <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" data-menu-toggle>☰</button>
+                <div class="topbar-context"><span class="context-icon">▦</span><span>Administração</span><span>/</span><strong>Contas</strong></div>
+                <div class="topbar-account"><span class="account-avatar"><%= String(usuario?.nome || "U").charAt(0).toUpperCase() %></span><span><%= usuario?.nome || "Usuário" %></span></div>
+            </header>
+            <div class="app-content">
+                <div class="page-heading">
+                    <div><div class="page-eyebrow">ADMINISTRAÇÃO / INTEGRAÇÕES</div><h1>Contas de marketplace</h1><p>Conecte a conta do Mercado Livre para preparar a importação de anúncios e vendas.</p></div>
+                </div>
+
+                <% if (mensagem) { %>
+                    <div class="integration-alert integration-alert-<%= mensagem.tipo %>" role="status"><%= mensagem.texto %></div>
+                <% } %>
+
+                <% if (!oauthConfigurado) { %>
+                    <div class="integration-alert integration-alert-aviso" role="status">A conexão ainda não está configurada. Preencha as credenciais OAuth e a chave de criptografia no arquivo .env e reinicie o servidor.</div>
+                <% } %>
+
+                <section class="integration-intro">
+                    <div><span class="integration-eyebrow">INTEGRAÇÃO DISPONÍVEL</span><h2>Mercado Livre</h2><p>Autorize o sistema pela página oficial do Mercado Livre. Sua senha do marketplace não é compartilhada com este sistema.</p></div>
+                    <% if (usuario?.perfil === "admin") { %>
+                        <% if (oauthConfigurado) { %><a class="app-button app-button-primary" href="/integracoes/mercadolivre/conectar">Conectar Mercado Livre <span>→</span></a><% } else { %><button class="app-button app-button-light" type="button" disabled>Configure o OAuth para conectar</button><% } %>
+                    <% } else { %>
+                        <span class="integration-admin-note">A conexão pode ser iniciada por um administrador.</span>
+                    <% } %>
+                </section>
+
+                <section class="integration-list-panel">
+                    <div class="integration-panel-heading"><div><h2>Contas conectadas</h2><p>O acesso é armazenado no servidor, criptografado no banco de dados.</p></div><span class="integration-count"><%= contas.length %> conta(s)</span></div>
+                    <% if (contas.length) { %>
+                        <div class="integration-table-wrap"><table class="integration-table"><thead><tr><th>Marketplace</th><th>Conta / seller</th><th>Status</th><th>Token expira em</th></tr></thead><tbody>
+                            <% contas.forEach((conta) => { %><tr><td><strong>Mercado Livre</strong></td><td><%= conta.nome_exibicao || `Seller ${conta.seller_externo_id}` %></td><td><span class="integration-status"><i></i><%= conta.status_conexao %></span></td><td><%= conta.access_token_expira_em ? new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" }).format(new Date(conta.access_token_expira_em)) : "—" %></td></tr><% }); %>
+                        </tbody></table></div>
+                    <% } else { %>
+                        <div class="integration-empty"><span>↗</span><h3>Nenhuma conta conectada</h3><p>Quando a autorização for concluída, a conta aparecerá aqui.</p></div>
+                    <% } %>
+                </section>
+                <p class="integration-next-step">Próxima etapa após a autorização: validar a conexão e iniciar a importação de anúncios e pedidos com sincronização segura.</p>
+                <footer class="app-footer"><span>© <%= new Date().getFullYear() %> Martins Importadora</span><span>Controle de Vendas</span></footer>
+            </div>
+        </main>
+    </div>
+    <div class="sidebar-overlay" data-sidebar-overlay></div>
+    <script>
+        const menuButton = document.querySelector("[data-menu-toggle]");
+        const sidebar = document.querySelector("#app-sidebar");
+        const overlay = document.querySelector("[data-sidebar-overlay]");
+        const fecharMenu = () => { sidebar.classList.remove("sidebar-open"); overlay.classList.remove("overlay-open"); menuButton.setAttribute("aria-expanded", "false"); };
+        menuButton.addEventListener("click", () => { const aberto = sidebar.classList.toggle("sidebar-open"); overlay.classList.toggle("overlay-open", aberto); menuButton.setAttribute("aria-expanded", String(aberto)); });
+        overlay.addEventListener("click", fecharMenu);
+    </script>
+</body>
+</html>

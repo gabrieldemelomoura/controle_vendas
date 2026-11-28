@@ -14,12 +14,16 @@ const ProdutoController = require("./mvc/controllers/ProdutoController");
 const LoginController = require("./mvc/controllers/LoginController");
 const UsuarioController = require("./mvc/controllers/UsuarioController");
 const ModuloController = require("./mvc/controllers/ModuloController");
+const MercadoLivreController = require("./mvc/controllers/MercadoLivreController");
 const { fornecerTokenCsrf } = require("./mvc/middlewares/Csrf");
 const DashboardModel = require("./mvc/model/DashboardModel");
 
 class Server {
     constructor() {
         this.app = express();
+        // O cloudflared encaminha as requisições por conexão local; confiar só no loopback
+        // permite ler X-Forwarded-For sem confiar em cabeçalhos de proxies arbitrários.
+        this.app.set("trust proxy", "loopback");
         this.porta = Number(process.env.PORT || 3000);
 
         this.configurarMiddlewares();
@@ -66,6 +70,7 @@ class Server {
         new VendaController(this.app);
         new LoginController(this.app);
         new UsuarioController(this.app);
+        new MercadoLivreController(this.app);
         new ModuloController(this.app);
     }
 
